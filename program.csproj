@@ -1,0 +1,38 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <AssemblyName>Main</AssemblyName>
+        <RootFolder>Bin</RootFolder>
+        <Platform>x64</Platform>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <OutputPath>$(RootFolder)\Debug\</OutputPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <OutputPath>$(RootFolder)\Release\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="program.cs" />
+    </ItemGroup>
+
+    <Target Name="Build" Inputs="@(Compile)" Outputs="$(OutputPath)$(AssemblyName).exe">
+        <MakeDir Directories="$(OutputPath)" Condition="!Exists('$(OutputPath)')" />
+        <CSC Sources="@(Compile)" OutputAssembly="$(OutputPath)$(AssemblyName).exe" TargetType="exe" DefineConstants="DEBUG" />
+        <CSC Condition=" '$(Configuration)' == 'Release' " Sources="@(Compile)" OutputAssembly="$(OutputPath)$(AssemblyName).exe" TargetType="exe" Optimize="true" />
+    </Target>
+
+    <Target Name="Run" DependsOnTargets="Build">
+        <Exec Command="$(OutputPath)$(AssemblyName).exe"/>
+    </Target>
+
+    <Target Name="Clean">
+        <RemoveDir Directories="$(RootFolder)" />
+    </Target>
+
+    <Target Name="Rebuild" DependsOnTargets="Clean;Build" />
+
+</Project>
